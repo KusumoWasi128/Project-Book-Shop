@@ -1,0 +1,698 @@
+{
+	"info": {
+		"_postman_id": "dd16efa3-fd65-4799-8c63-eb2a3b38dd2f",
+		"name": "Book Shop Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "BUKU",
+			"item": [
+				{
+					"name": "Tambah Buku ke Toko Pertama",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test('kode status harus berisi 201', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('isi body pada response harus sesuai', () => {\r",
+									"\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equals('');\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('kode_buku');\r",
+									"    pm.expect(responseJson.kode_buku).to.be.a('string');\r",
+									"    pm.expect(responseJson.kode_buku).to.not.equals('');\r",
+									"});\r",
+									"\r",
+									"pm.test('Harus mengembalikan kode dari buku', () => {\r",
+									"    const {kode_buku} = responseJson\r",
+									"    pm.expect(kode_buku).to.not.equals('');\r",
+									"\r",
+									"    pm.environment.set('kodeBuku', kode_buku);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\" : \"Buku pertama\",\r\n    \"description\": \"bla bla bla\",\r\n    \"rating\": 5,\r\n    \"discount\": 10\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shops/book/{{kodeToko}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"book",
+								"{{kodeToko}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Baca Semua Buku di Toko Pertama",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test('Status Kode harus 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body harus berisi data', () => {\r",
+									"\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									"\r",
+									"pm.test('data harus berisi buku', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"    pm.expect(data).lengthOf(1);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shops/book/{{kodeToko}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"book",
+								"{{kodeToko}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Baca Buku Spesifik di Toko Pertama",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test('Status Kode harus 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body harus memiliki properti data', () => {\r",
+									"\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									"\r",
+									"pm.test('properti data harus berbentuk objek ', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"\r",
+									"    pm.expect(data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('Data yang didapatkan harus sesuai dengan parameter', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"\r",
+									"    pm.expect(data).to.haveOwnProperty('book_code');\r",
+									"\r",
+									"\r",
+									"    pm.expect(data.book_code).to.equals(pm.environment.get('kodeBuku'));\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shops/book/{{kodeToko}}/{{kodeBuku}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"book",
+								"{{kodeToko}}",
+								"{{kodeBuku}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Buku",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('kode status harus 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('Ketika mendapatkan buku harus sesuai dengan yang di update', () => {\r",
+									"    const baseUrl = pm.environment.get('baseUrl');\r",
+									"    const kodeToko = pm.environment.get('kodeToko');\r",
+									"    const kodeBuku = pm.environment.get('kodeBuku');\r",
+									"\r",
+									"    pm.sendRequest(`${{baseUrl}}/shops/book/${{kodeToko}}/${{kodeBuku}}`, (error, response) => {\r",
+									"        if (!error) {\r",
+									"            pm.test('toko harus updated', () => {\r",
+									"                pm.expect(response.code).to.equals(200);\r",
+									"                const { data } = response.json();\r",
+									"\r",
+									"                pm.expect(data.title).to.equals(pm.environment.get('updateBookTitle'));\r",
+									"                pm.expect(data.description).to.equals(Number(pm.environment.get('updateBookDescription')));\r",
+									"                pm.expect(data.rating).to.equals(pm.environment.get('updateBookRating'));\r",
+									"                pm.expect(data.discount).to.equals(pm.environment.get('updateBookDiscount'));\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": {{updateBookTitle}},\r\n    \"description\":{{updateBookDescription}},\r\n    \"rating\":{{updateBookRating}},\r\n    \"discount\":{{updateBookDiscount}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shops/book/{{kodeToko}}/{{kodeBuku}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"book",
+								"{{kodeToko}}",
+								"{{kodeBuku}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Buku",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status kode harus berisi 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test('ketika mencoba mendapatkan datanya harus mengembalikan 404', () => {\r",
+									"    const baseUrl = pm.environment.get('baseUrl');\r",
+									"    const kodeToko = pm.environment.get('kodeToko');\r",
+									"    const kodeBuku = pm.environment.get('kodeBuku');\r",
+									"\r",
+									"    pm.sendRequest(`${baseUrl}/shops/book/${kodeToko}/${kodeBuku}`, (error, response) => {\r",
+									"        if (!error) {\r",
+									"            pm.test('harus mengembalikan response not found', () => {\r",
+									"                pm.expect(response.code).to.equals(404);\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shops/book/{{kodeToko}}/{{kodeBuku}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"book",
+								"{{kodeToko}}",
+								"{{kodeBuku}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TOKO",
+			"item": [
+				{
+					"name": "Tambah Toko Pertama",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test('kode status harus berisi 201', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('isi body pada response harus sesuai', () => {\r",
+									"\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equals('');\r",
+									"});\r",
+									"\r",
+									"pm.test('Harus mengembalikan kode dari toko', () => {\r",
+									"    const {kode_toko} = responseJson\r",
+									"    pm.expect(kode_toko).to.not.equals('');\r",
+									"\r",
+									"    // memasukkan kode_toko ke env variable.\r",
+									"    pm.environment.set('kodeToko', kode_toko);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Toko A\",\r\n    \"Address\": \"Address\",\r\n    \"City\":\"Yogyakarta\",\r\n    \"Owner\":\"Joko\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shops",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tambah Toko Kedua",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test('kode status harus berisi 201', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('isi body pada response harus sesuai', () => {\r",
+									"\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"    pm.expect(responseJson.message).to.not.equals('');\r",
+									"});\r",
+									"\r",
+									"pm.test('Harus mengembalikan id dari toko', () => {\r",
+									"    const {kode_toko} = responseJson\r",
+									"    pm.expect(kode_toko).to.not.equals('');\r",
+									"\r",
+									"    // memasukkan kode_toko ke env variable.\r",
+									"    pm.environment.set('kodeTokoKedua', kode_toko);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Toko B\",\r\n    \"Address\": \"Mana Aja\",\r\n    \"City\":\"Jakarta\",\r\n    \"Owner\":\"Joko\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shops",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Baca Semua Toko",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test('Status Kode harus 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body harus berisi data', () => {\r",
+									"\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									"\r",
+									"pm.test('data harus berisi dua toko', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"    pm.expect(data).lengthOf(2);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shops",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Baca Toko Pertama",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJson = pm.response.json();\r",
+									"pm.test('Status Kode harus 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body harus memiliki properti data', () => {\r",
+									"\r",
+									"    pm.expect(responseJson).to.haveOwnProperty('data');\r",
+									"});\r",
+									"\r",
+									"pm.test('properti data harus berbentuk objek ', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"\r",
+									"    pm.expect(data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('Data yang didapatkan harus sesuai dengan parameter', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									"\r",
+									"    pm.expect(data).to.haveOwnProperty('shop_code');\r",
+									"\r",
+									"\r",
+									"    pm.expect(data.shop_code).to.equals(pm.environment.get('kodeToko'));\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shops/{{kodeToko}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"{{kodeToko}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Toko Pertama",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('kode status harus 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test('Ketika mendapatkan toko pertama harus sesuai dengan yang di update', () => {\r",
+									"    const baseUrl = pm.environment.get('baseUrl');\r",
+									"    const kodeToko = pm.environment.get('kodeToko');\r",
+									"\r",
+									"    pm.sendRequest(`${{baseUrl}}/shops/${{kodeToko}}`, (error, response) => {\r",
+									"        if (!error) {\r",
+									"            pm.test('toko harus updated', () => {\r",
+									"                pm.expect(response.code).to.equals(200);\r",
+									"                const { data } = response.json();\r",
+									"\r",
+									"                pm.expect(data.name).to.equals(pm.environment.get('updateName'));\r",
+									"                pm.expect(data.address).to.equals(Number(pm.environment.get('updateAdress')));\r",
+									"                pm.expect(data.city).to.equals(pm.environment.get('updateCity'));\r",
+									"                pm.expect(data.owner).to.equals(pm.environment.get('updateOwner'));\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : {{updateName}},\r\n    \"city\":{{updateCity}},\r\n    \"owner\":{{updateOwner}},\r\n    \"address\":{{updateAddress}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/shops/{{kodeToko}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"{{kodeToko}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Toko Kedua",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('status kode harus berisi 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type harus berisi application/json', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test('ketika mencoba mendapatkan datanya harus mengembalikan 404', () => {\r",
+									"    const baseUrl = pm.environment.get('baseUrl');\r",
+									"    const kodeToko = pm.environment.get('kodeTokoKedua');\r",
+									"\r",
+									"    pm.sendRequest(`${baseUrl}/shops/${kodeToko}`, (error, response) => {\r",
+									"        if (!error) {\r",
+									"            pm.test('harus mengembalikan response not found', () => {\r",
+									"                pm.expect(response.code).to.equals(404);\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/shops/{{kodeTokoKedua}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"shops",
+								"{{kodeTokoKedua}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API STATUS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Kode status harus 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const response = pm.response.json();\r",
+							"pm.test(\"Status harus berisi OK\", ()=>{\r",
+							"    pm.expect(response.status).to.eql(\"OK\");\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST TEST",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/shops/{{kodeToko}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"shops",
+						"{{kodeToko}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
